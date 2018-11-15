@@ -1,6 +1,10 @@
+/* eslint-disable arrow-parens */
 /* eslint-disable linebreak-style */
 const express = require('express');
+const sql = require('mssql');
+const debug = require('debug')('app:bookRoutes');
 
+debug.enabled = true;
 const bookRouter = express.Router();
 
 function router(nav) {
@@ -25,10 +29,14 @@ function router(nav) {
     }
   ];
   bookRouter.route('/').get((req, res) => {
-    res.render('bookListView', {
-      title: 'Library',
-      nav,
-      books
+    const request = new sql.Request();
+    request.query('Select * From Books').then(result => {
+      debug(result);
+      res.render('bookListView', {
+        title: 'Library',
+        nav,
+        books: result.recordset
+      });
     });
   });
 

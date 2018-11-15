@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 /* eslint-disable linebreak-style */
 /* eslint-disable comma-dangle */
 const express = require('express');
@@ -10,20 +11,22 @@ const sql = require('mssql');
 const app = express();
 const port = process.env.PORT || 3000;
 
+debug.enabled = true;
 const config = {
-  user: '...',
-  password: '...',
+  user: 'appuser',
+  password: 'P@ssw0rd1',
   server: 'localhost', // You can use 'localhost\\instance' to connect to named instance
-  database: '...',
+  database: 'PSLibrary',
 
   options: {
     encrypt: true // Use this if you're on Windows Azure
   }
 };
 
-sql.connect(config).catch((err) => {
+sql.connect(config).catch(err => {
   debug(err);
 });
+
 app.use(morgan('tiny'));
 app.use(express.static(path.join(__dirname, '/public/')));
 
