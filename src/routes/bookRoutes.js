@@ -1,3 +1,4 @@
+/* eslint-disable wrap-iife */
 /* eslint-disable arrow-parens */
 /* eslint-disable linebreak-style */
 const express = require('express');
@@ -29,15 +30,16 @@ function router(nav) {
     }
   ];
   bookRouter.route('/').get((req, res) => {
-    const request = new sql.Request();
-    request.query('Select * From Books').then(result => {
-      debug(result);
+    (async function query() {
+      const request = new sql.Request();
+      const result = await request.query('Select * From Books');
+      // debug(result);
       res.render('bookListView', {
         title: 'Library',
         nav,
         books: result.recordset
       });
-    });
+    })();
   });
 
   bookRouter.route('/:id').get((req, res) => {
