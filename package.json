@@ -5,7 +5,7 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "@powershell $env:DEBUG='*' & nodemon app.js",
+    "start": "DEBUG=* & nodemon app.js",
     "lint": "eslint app.js"
   },
   "author": "",
@@ -17,6 +17,7 @@
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "jquery": "^3.3.1",
+    "mongodb": "^3.1.9",
     "morgan": "^1.9.1",
     "mssql": "^4.2.3",
     "nodemon": "^1.18.6",
