@@ -27,6 +27,10 @@ sql.connect(config).catch(err => {
   debug(err);
 });
 
+app.use((req, res, next) => {
+  debug('my middleware');
+  next();
+});
 app.use(morgan('tiny'));
 app.use(express.static(path.join(__dirname, '/public/')));
 
