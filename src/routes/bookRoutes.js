@@ -32,24 +32,32 @@ function router(nav) {
   bookRouter.route('/').get((req, res) => {
     (async function query() {
       const request = new sql.Request();
-      const result = await request.query('Select * From Books');
+      const { recordset } = await request.query('Select * From Books');
       // debug(result);
       res.render('bookListView', {
         title: 'Library',
         nav,
-        books: result.recordset
+        books: recordset
       });
     })();
   });
 
   bookRouter.route('/:id').get((req, res) => {
-    const { id } = req.params;
+    (async function query() {
+      const { id } = req.params;
 
-    res.render('bookView', {
-      title: 'Library',
-      nav,
-      book: books[id]
-    });
+      const request = new sql.Request();
+      const { recordset } = await request
+        .input('id', sql.Int, id)
+        .query('Select * From Books where id = @id');
+      // debug(recordset);
+
+      res.render('bookView', {
+        title: 'Library',
+        nav,
+        book: recordset[0]
+      });
+    })();
   });
 
   return bookRouter;
