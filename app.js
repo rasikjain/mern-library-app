@@ -1,37 +1,28 @@
 /* eslint-disable arrow-parens */
 /* eslint-disable linebreak-style */
 /* eslint-disable comma-dangle */
+const bodyParser = require('body-parser');
 const express = require('express');
 const chalk = require('chalk');
 const debug = require('debug')('app');
 const morgan = require('morgan');
 const path = require('path');
-const sql = require('mssql');
+const passport = require('passport');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 debug.enabled = true;
-const config = {
-  user: 'appuser',
-  password: 'P@ssw0rd1',
-  server: 'localhost', // You can use 'localhost\\instance' to connect to named instance
-  database: 'PSLibrary',
 
-  options: {
-    encrypt: true // Use this if you're on Windows Azure
-  }
-};
-
-sql.connect(config).catch(err => {
-  debug(err);
-});
-
-app.use((req, res, next) => {
-  debug('my middleware');
-  next();
-});
 app.use(morgan('tiny'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(session({ secret: 'library' }));
+require('./src/config/passport.js')(app);
+
 app.use(express.static(path.join(__dirname, '/public/')));
 
 app.use(
@@ -55,9 +46,12 @@ const nav = [
 ];
 const bookRouter = require('./src/routes/bookRoutes')(nav);
 const adminRouter = require('./src/routes/adminRoutes')(nav);
+const authRouter = require('./src/routes/authRoutes')(nav);
 
 app.use('/books', bookRouter);
 app.use('/admin', adminRouter);
+app.use('/auth', authRouter);
+
 app.get('/', (req, res) => {
   res.render('index', {
     title: 'Library',
