@@ -3,6 +3,14 @@ const { MongoClient, ObjectID } = require('mongodb');
 
 /* eslint-disable wrap-iife */
 function bookController(nav) {
+  function middlewareCheckAuth(req, res, next) {
+    if (req.user) {
+      next();
+    } else {
+      res.redirect('/');
+    }
+  }
+
   function getIndex(req, res) {
     const url = 'mongodb://localhost:27017';
     const dbName = 'LibraryApp';
@@ -35,9 +43,33 @@ function bookController(nav) {
     });
   }
 
+  function getUser(req, res, next) {
+    const url = 'mongodb://localhost:27017';
+    const dbName = 'LibraryApp';
+
+    (async function query() {
+      const { id } = req.params;
+      let client;
+      try {
+        client = await MongoClient.connect(url);
+        debug('connected to mongodb');
+        const db = await client.db(dbName);
+        const col = await db.collection('books');
+        const book = await col.findOne({ _id: new ObjectID(id) });
+        req.book = book;
+      } catch (err) {
+        debug(err.stack);
+      }
+      client.close();
+      next();
+    })();
+  }
+
   return {
+    middlewareCheckAuth,
     getIndex,
-    getById
+    getById,
+    getUser
   };
 }
 
