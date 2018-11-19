@@ -10,12 +10,14 @@ const books = [
     title: 'RandomTitle',
     genre: 'Random Genre',
     author: 'Random Author',
+    bookId: 656,
     read: false
   },
   {
     title: 'RandomTitle1',
     genre: 'Random Genre1',
     author: 'Random Author1',
+    bookId: 24280,
     read: false
   },
   {

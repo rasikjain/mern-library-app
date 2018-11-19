@@ -2,7 +2,7 @@ const debug = require('debug')('app:bookController');
 const { MongoClient, ObjectID } = require('mongodb');
 
 /* eslint-disable wrap-iife */
-function bookController(nav) {
+function bookController(bookService, nav) {
   function middlewareCheckAuth(req, res, next) {
     if (req.user) {
       next();
@@ -43,7 +43,7 @@ function bookController(nav) {
     });
   }
 
-  function getUser(req, res, next) {
+  function getBookDetails(req, res, next) {
     const url = 'mongodb://localhost:27017';
     const dbName = 'LibraryApp';
 
@@ -56,6 +56,8 @@ function bookController(nav) {
         const db = await client.db(dbName);
         const col = await db.collection('books');
         const book = await col.findOne({ _id: new ObjectID(id) });
+        book.details = await bookService.getBookById(book.bookId);
+
         req.book = book;
       } catch (err) {
         debug(err.stack);
@@ -69,7 +71,7 @@ function bookController(nav) {
     middlewareCheckAuth,
     getIndex,
     getById,
-    getUser
+    getBookDetails
   };
 }
 

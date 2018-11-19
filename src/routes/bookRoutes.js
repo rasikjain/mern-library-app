@@ -2,23 +2,25 @@
 /* eslint-disable arrow-parens */
 /* eslint-disable linebreak-style */
 const express = require('express');
-const debug = require('debug')('app:bookRoutes');
 const bookController = require('../controllers/bookController');
 
-debug.enabled = true;
 const bookRouter = express.Router();
+const bookService = require('../services/goodreadsService');
 
 function router(nav) {
-  const { middlewareCheckAuth, getIndex, getById, getUser } = bookController(
-    nav
-  );
+  const {
+    middlewareCheckAuth,
+    getIndex,
+    getById,
+    getBookDetails
+  } = bookController(bookService, nav);
 
   bookRouter.use(middlewareCheckAuth);
   bookRouter.route('/').get(getIndex);
 
   bookRouter
     .route('/:id')
-    .all(getUser)
+    .all(getBookDetails)
     .get(getById);
 
   return bookRouter;
