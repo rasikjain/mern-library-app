@@ -9,9 +9,7 @@ function goodReadsService() {
   function getBookById(id) {
     return new Promise((resolve, reject) => {
       axios
-        .get(
-          `https://www.goodreads.com/book/show/${id}.xml?key=USgZajrNeDVUG4ACekLTA`
-        )
+        .get(`https://www.goodreads.com/book/show/${id}.xml?key=XXXXX`)
         .then(response => {
           parser.parseString(response.data, (err, result) => {
             if (err) {
